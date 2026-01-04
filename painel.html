@@ -9,8 +9,9 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background: #1a0631; color: white; display: flex; justify-content: center; padding: 20px; }
         .admin-box { width: 100%; max-width: 500px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; }
-        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; 
+    display: block; }
+        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; box-sizing: border-box;}
         .link-item { background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
         .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; }
         #login-screen { text-align: center; }
@@ -43,6 +44,17 @@
                     <option value="ph ph-google-logo">🌐 Google</option>
                     <option value="ph ph-wifi-high">📶 Wi-Fi</option>
                     <option value="ph ph-shopping-cart">🛒 Loja</option>
+                    <option value="ph ph-x-logo">✖️ X (Twitter)</option>
+                    <option value="ph ph-google-drive-logo">📂 Google Drive</option>
+                    <option value="ph ph-google-play-logo">🤖 PlayStore</option>
+                    <option value="ph ph-app-store-logo">🍎 Apple Store</option>
+                    <option value="ph ph-linkedin-logo">💼 LinkedIn</option>
+                    <option value="ph ph-music-notes">🎵 Músicas (Spotify/Deezer)</option>
+                    <option value="ph ph-shopping-cart">🛒 Carrinho de Compra</option>
+                    <option value="ph ph-calendar">📅 Agenda / Reservas</option>
+                    <option value="ph ph-clock">⏰ Horários / Relógio</option>
+                    <option value="ph ph-house-line">🏠 AirBnb</option>
+                    <option value="ph ph-currency-dollar">💰 PicPay / Pagamento</option>
                 </select>
                 <button onclick="addLink()">Adicionar Div</button>
             </div>
