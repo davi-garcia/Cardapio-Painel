@@ -126,6 +126,27 @@
         }
 
         function logout() { location.reload(); }
+
+        function addLink() {
+    const title = document.getElementById('new-title').value;
+    let url = document.getElementById('new-url').value.trim(); 
+    const icon = document.getElementById('new-icon').value;
+
+    if(!title || !url) return alert('Preencha tudo!');
+
+    // Força o link a ser externo. Sem isso, o navegador tenta abrir dentro do seu site.
+    if (!url.startsWith('http')) {
+        url = 'https://' + url;
+    }
+
+    let links = JSON.parse(localStorage.getItem('myLinks')) || initialLinks;
+    links.push({ title, url, icon });
+    localStorage.setItem('myLinks', JSON.stringify(links));
+    renderLinks();
+    
+    document.getElementById('new-title').value = '';
+    document.getElementById('new-url').value = '';
+}
     </script>
 </body>
 </html>

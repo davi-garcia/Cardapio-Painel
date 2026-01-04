@@ -559,6 +559,19 @@ function loadDynamicLinks() {
 }
 
 window.addEventListener('load', loadDynamicLinks);
+
+
+let htmlContent = linksSalvos.map(link => {
+    // Garantia extra: se o link salvo no banco estiver sem http, corrige na hora de exibir
+    let urlCorrigida = link.url.startsWith('http') ? link.url : 'https://' + link.url;
+    
+    return `
+        <a href="${urlCorrigida}" target="_blank" rel="noopener noreferrer" class="link-card">
+            <i class="${link.icon}"></i>
+            <span>${link.title}</span>
+        </a>
+    `;
+}).join('');
 </script>
 </body>
 </html>
