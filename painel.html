@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Delisil</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #1a0631; color: white; display: flex; justify-content: center; padding: 20px; }
+        .admin-box { width: 100%; max-width: 500px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; }
+        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .link-item { background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; }
+        #login-screen { text-align: center; }
+        #admin-content { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-box">
+        <div id="login-screen">
+            <h2>🔐 Login</h2>
+            <input type="text" id="user" placeholder="Usuário">
+            <input type="password" id="pass" placeholder="Senha">
+            <button onclick="login()">Entrar</button>
+        </div>
+
+        <div id="admin-content">
+            <h2>🛠 Gerenciar Links</h2>
+            
+            <div id="form-novo">
+                <h4>Adicionar Novo Link</h4>
+                <input type="text" id="new-title" placeholder="Título (Ex: TikTok)">
+                <input type="text" id="new-url" placeholder="URL (https://...)">
+                <select id="new-icon">
+                    <option value="ph ph-link">🔗 Link Padrão</option>
+                    <option value="ph ph-instagram-logo">📸 Instagram</option>
+                    <option value="ph ph-facebook-logo">👤 Facebook</option>
+                    <option value="ph ph-whatsapp-logo">💬 WhatsApp</option>
+                    <option value="ph ph-map-pin">📍 Localização</option>
+                    <option value="ph ph-google-logo">🌐 Google</option>
+                    <option value="ph ph-wifi-high">📶 Wi-Fi</option>
+                    <option value="ph ph-shopping-cart">🛒 Loja</option>
+                </select>
+                <button onclick="addLink()">Adicionar Div</button>
+            </div>
+
+            <hr style="margin: 20px 0; opacity: 0.2;">
+            <h4>Links Ativos</h4>
+            <div id="links-container"></div>
+            <button onclick="logout()" style="background: #666; margin-top: 30px;">Sair</button>
+        </div>
+    </div>
+
+    <script>
+        // Links Iniciais (Padrão)
+        const initialLinks = [
+            { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+            { title: "Avalie no Google", url: "https://g.page/r/CcLV16_qj79jEAE/review", icon: "ph ph-google-logo" },
+            { title: "Facebook", url: "https://www.facebook.com/davi.ogarcia0/", icon: "ph ph-facebook-logo" },
+            { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" },
+            { title: "WhatsApp", url: "https://wa.me/5521968439249", icon: "ph ph-whatsapp-logo" },
+            { title: "Conectar no Wi-Fi", url: "https://docs.google.com/document/d/e/2PACX-1vTQSd0gWhcJtZ6rBq67Pp9DG4zTLON-yZdedZzJ6zTvHqejWanJJF8HZ658qcr0NnK9_525hZmw8leQ/pub", icon: "ph ph-wifi-high" }
+        ];
+
+        function login() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === 'admin1234') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                renderLinks();
+            } else { alert('Acesso negado!'); }
+        }
+
+        function renderLinks() {
+            let links = JSON.parse(localStorage.getItem('myLinks')) || initialLinks;
+            const container = document.getElementById('links-container');
+            container.innerHTML = '';
+            
+            links.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="link-item">
+                        <span><i class="${item.icon}"></i> ${item.title}</span>
+                        <button class="btn-delete" onclick="removeLink(${index})">Remover</button>
+                    </div>`;
+            });
+            localStorage.setItem('myLinks', JSON.stringify(links));
+        }
+
+        function addLink() {
+            const title = document.getElementById('new-title').value;
+            const url = document.getElementById('new-url').value;
+            const icon = document.getElementById('new-icon').value;
+
+            if(!title || !url) return alert('Preencha tudo!');
+
+            let links = JSON.parse(localStorage.getItem('myLinks')) || initialLinks;
+            links.push({ title, url, icon });
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            renderLinks();
+            
+            document.getElementById('new-title').value = '';
+            document.getElementById('new-url').value = '';
+        }
+
+        function removeLink(index) {
+            let links = JSON.parse(localStorage.getItem('myLinks'));
+            links.splice(index, 1);
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            renderLinks();
+        }
+
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>
