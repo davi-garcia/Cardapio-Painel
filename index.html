@@ -10,7 +10,7 @@
     
     <style>
         :root {
-            --primary-bg: #2d0a4e;
+            --primary-bg: #2d0a4e; /* Roxo profundo */
             --accent-purple: #020202;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
@@ -30,6 +30,7 @@
             color: var(--text-color);
         }
 
+        /* Camada da Imagem de Fundo Borrada */
         body::before {
             content: "";
             position: fixed;
@@ -37,23 +38,28 @@
             left: 0;
             width: 100%;
             height: 100%;
+        /* SUBSTITUA A URL ABAIXO PELA SUA IMAGEM */
             background-image: url('img/fundo.webp'); 
             background-size: cover;
             background-position: center;
-            filter: blur(15px) brightness(0.4);
-            transform: scale(1.1);
-            z-index: -1;
-        }
+            filter: blur(15px) brightness(0.4); /* Blur aumenta o borrão, brightness escurece para o texto aparecer */
+            transform: scale(1.1); /* Evita bordas brancas causadas pelo blur */
+            z-index: -1; /* Garante que fique atrás de tudo */
+}
 
+        /* Container Principal */
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 450px; /* Largura de celular */
             padding: 40px 20px;
             text-align: center;
             box-sizing: border-box;
         }
 
-        .header { margin-bottom: 30px; }
+        /* Logo e Header */
+        .header {
+            margin-bottom: 30px;
+        }
 
         .logo-wrapper {
             width: 120px;
@@ -68,11 +74,15 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        .logo-wrapper img { width: 85%; height: auto; }
+        .logo-wrapper img {
+            width: 85%;
+            height: auto;
+        }
 
         h1 { font-size: 1.5rem; margin: 0; font-weight: 600; }
         p { font-size: 0.9rem; opacity: 0.8; margin: 5px 0 20px; }
 
+        /* Botão Principal (Salvar na Agenda) */
         .btn-main {
             background: transparent;
             border: 2px solid #fff;
@@ -86,8 +96,12 @@
             margin-bottom: 40px;
         }
 
-        .btn-main:hover { background: white; color: var(--primary-bg); }
+        .btn-main:hover {
+            background: white;
+            color: var(--primary-bg);
+        }
 
+        /* Lista de Links */
         .links-list {
             display: flex;
             flex-direction: column;
@@ -109,12 +123,29 @@
             position: relative;
         }
 
-        .link-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.2); }
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-        .link-card i { font-size: 24px; margin-right: 15px; width: 30px; }
+        .link-card i {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 30px;
+        }
 
-        .link-card span { font-weight: 400; flex-grow: 1; text-align: left; }
+        .link-card span {
+            font-weight: 400;
+            flex-grow: 1;
+            text-align: left;
+        }
 
+        .copy-icon {
+            font-size: 18px;
+            opacity: 0.6;
+        }
+
+        /* Responsividade para Computador */
         @media (min-width: 768px) {
             .container {
                 max-width: 500px;
@@ -125,47 +156,75 @@
             }
         }
 
+        /* Estilos específicos para os botões na seção de header */
         .btn-header {
-            display: block;
-            max-width: 240px;
-            margin: 20px auto;
-            padding: 10px 30px;
-            font-size: 15px;
-            margin-top: -15px;
-        }
+            display: block;          /* Faz o botão ocupar a linha toda, jogando o próximo para baixo */
+            max-width: 240px;        /* Define uma largura máxima para não ficar largo demais */
+            margin: 20px auto;       /* 10px é o espaço entre eles, 'auto' centraliza o botão */
+            padding: 10px 30px;      /* Ajusta o respiro interno do botão */
+            font-size: 15px;         /* Ajusta o tamanho da fonte se necessário */
+            margin-top: -15px;       /* Ajusta a margem superior para aproximar do texto acima */
+}
 
-        .btn-header:last-of-type { margin-bottom: 25px; }
+        /* Remove a margem de baixo do último botão para não empurrar os links de baixo */
+            .btn-header:last-of-type {
+            margin-bottom: 25px;
+}
 
-        #pixModal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
 
-        .modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            max-width: 450px;
-            width: 90%;
-        }
 
-        .modal-content .close {
-            position: absolute;
-            top: 10px; right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            color: white;
-        }
+/* Modal Background */
+#pixModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); /* Fundo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Conteúdo do Modal */
+.modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    max-width: 450px;
+    width: 90%;
+}
+
+/* Botão de fechar */
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+/* Texto dentro do modal */
+.modal-content h2 {
+    margin: 0 0 10px 0;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.modal-content p {
+    color: white;
+    font-size: 0.95rem;
+    text-align: center;
+    margin: 0 0 15px 0;
+}
+
     </style>
 </head>
 <body>
@@ -182,124 +241,324 @@
         </div>
 
         <div class="links-list" id="dynamic-links">
-            <p>Carregando links...</p>
+            <a href="https://maps.app.goo.gl/tuynE21oZ9jkgagB6" target="_blank" class="link-card">
+                <i class="ph ph-map-pin"></i>
+                <span>Nossa Loja</span>
+            </a>
+
+            <a href="https://g.page/r/CcLV16_qj79jEAE/review" target="_blank" class="link-card">
+                <i class="ph ph-google-logo"></i>
+                <span>Avalie no Google</span>
+            </a>
+
+            <a href="https://www.facebook.com/davi.ogarcia0/" target="_blank" class="link-card">
+                <i class="ph ph-facebook-logo"></i>
+                <span>Facebook</span>
+            </a>
+
+            <a href="https://www.instagram.com/davi.ogarcia" target="_blank" class="link-card">
+                <i class="ph ph-instagram-logo"></i>
+                <span>Instagram</span>
+            </a>
+
+            <a href="https://wa.me/5521968439249" target="_blank" class="link-card">
+                <i class="ph ph-whatsapp-logo"></i>
+                <span>WhatsApp</span>
+            </a>
+
+            <a href="https://docs.google.com/document/d/e/2PACX-1vTQSd0gWhcJtZ6rBq67Pp9DG4zTLON-yZdedZzJ6zTvHqejWanJJF8HZ658qcr0NnK9_525hZmw8leQ/pub" target="_blank" class="link-card">
+                <i class="ph ph-wifi-high"></i><span>Conectar no Wi-Fi</span>
+            </a>
+
+            <div class="link-card" style="cursor:pointer" onclick="copiarPix()">
+                <i class="ph ph-copy"></i>
+                <span>Chave PIX</span>
+                <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+            </div>
+
+            <div class="link-card" style="cursor:pointer" href="javascript:void(0)" id="showImageBtn">
+            <i class="ph ph-qr-code"></i>
+            <span>Pagar via PIX (QrCode)</span>
+            </div>
+
+            <!-- Modal para QR Code -->
+            <div id="pixModal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                     <h2 style="margin-bottom: 20px; color:white; font-size:1.2rem;">Pagar via PIX</h2>
+                    <img src="img/qrcode.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);"></br>
+                    <img src="img/logo_pix.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                    <p style="color:white; font-size:0.95rem; margin-bottom:15px;">
+                        Abra o pix do seu banco e pague através do QR Code ou Pix Chave Aleatória.
+                        </p>
+            <!-- Botão para copiar a chave PIX -->
+                    <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPixModal()">
+                        <i class="ph ph-copy"></i>
+                        <span>Copiar PIX (Chave Aleatória)</span>
+                        <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                    </div>   
+                </div>
+            </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAwazCVEVkolnyRbIJAx2a4_IpMtXoZ-Js",
-            authDomain: "delisil.firebaseapp.com",
-            projectId: "delisil",
-            storageBucket: "delisil.firebasestorage.app",
-            messagingSenderId: "90955672138",
-            appId: "1:90955672138:web:79b2df6037611badd7d4b3"
+    <script>
+    document.getElementById('downloadVCard').addEventListener('click', function() {
+        // Dados do Contato que é Salvo ****
+        const contact = {
+            name: "Delisil",
+            phone: "+5521968439249",
+            email: "davi100msn@gmail.com",
+            site: "https://davi-garcia.github.io/cardapio-contato/",
+            address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ" // Endereço dos contatos ****
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Estrutura do arquivo vCard (vcf)
+        const vcard = `BEGIN:VCARD
+        VERSION:3.0
+        FN:${contact.name}
+        TEL;TYPE=CELL,VOICE:${contact.phone}
+        EMAIL;TYPE=PREF,INTERNET:${contact.email}
+        URL:${contact.site}
+        ADR;TYPE=WORK:;;${contact.address};;;;
+        END:VCARD`;
 
-        // Escuta o Firebase em tempo real
-        onSnapshot(doc(db, "config", "links"), (docSnap) => {
-            if (docSnap.exists()) {
-                const linksData = docSnap.data().meusLinks;
-                loadDynamicLinks(linksData);
-            } else {
-                // Caso não existam dados no Firebase, usa os padrões que você tinha
-                loadDynamicLinks([
-                    { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
-                    { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" }
-                ]);
-            }
-        });
+        // Cria o arquivo e dispara o download
+        const blob = new Blob([vcard], { type: "text/vcard" });
+        const url = window.URL.createObjectURL(blob);
+        const newLink = document.createElement('a');
+        newLink.download = contact.name + ".vcf";
+        newLink.href = url;
+        newLink.click();
+        window.URL.revokeObjectURL(url);
+    });
 
-        function loadDynamicLinks(linksSalvos) {
-            const container = document.getElementById('dynamic-links');
-            
-            let htmlContent = linksSalvos.map(link => `
-                <a href="${link.url}" target="_blank" class="link-card">
-                    <i class="${link.icon}"></i>
-                    <span>${link.title}</span>
-                </a>
-            `).join('');
+    function copiarPix() {
+    const chavePix = "21968439249"; // <-- Coloque aqui a sua chave pix do Index *****
+    
+    navigator.clipboard.writeText(chavePix).then(() => {
+        // Mostra o aviso de "Copiado!"
+        const status = document.getElementById('status-pix');
+        status.style.display = "inline";
+        
+        // Esconde o aviso após 2 segundos
+        setTimeout(() => {
+            status.style.display = "none";
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+    });
+}
 
-            // Adiciona seus botões fixos de PIX e o Modal ORIGINAL
-            htmlContent += `
-                <div class="link-card" style="cursor:pointer" id="btn-pix-lista">
-                    <i class="ph ph-copy"></i>
-                    <span>Chave PIX</span>
-                    <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
-                </div>
+// Mostra o modal
+document.getElementById('showImageBtn').addEventListener('click', function() {
+    const modal = document.getElementById('pixModal');
+    modal.style.display = "flex"; 
+});
 
-                <div class="link-card" style="cursor:pointer" id="showImageBtn">
-                    <i class="ph ph-qr-code"></i>
-                    <span>Pagar via PIX (QrCode)</span>
-                </div>
+// Fecha o modal ao clicar no X
+document.querySelector('.modal-content .close').addEventListener('click', function() {
+    document.getElementById('pixModal').style.display = "none";
+});
 
-                <div id="pixModal">
-                    <div class="modal-content">
-                        <span class="close" id="closeModal">×</span>
-                        <h2 style="margin-bottom: 20px; color:white; font-size:1.2rem;">Pagar via PIX</h2>
-                        <img src="img/qrcode.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);"><br><br>
-                        <img src="img/logo_pix.png" alt="Logo PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
-                        <p style="color:white; font-size:0.95rem; margin-bottom:15px; margin-top:15px;">
-                            Abra o pix do seu banco e pague através do QR Code ou Pix Chave Aleatória.
+// Fecha o modal ao clicar fora do conteúdo
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('pixModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
+
+// Função para copiar chave PIX dentro do modal
+function copiarPixModal() {
+    const chavePix = "1c0ba67a-340c-4ed9-b7cc-abdcaba60de8"; // Coloque sua chave PIX aqui do Modal  ****
+    
+    navigator.clipboard.writeText(chavePix).then(() => {
+        const status = document.getElementById('status-pix-modal');
+        status.style.display = "inline";
+        setTimeout(() => {
+            status.style.display = "none";
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+    });
+}
+
+// Função para editar as Divs através de um painel administrativo
+function loadDynamicLinks() {
+    const container = document.getElementById('dynamic-links');
+    
+    // 1. Busca os links do Painel Admin (ou usa padrão se vazio)
+    const linksPadrao = [
+        { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+        { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" }
+    ];
+    const linksSalvos = JSON.parse(localStorage.getItem('myLinks')) || linksPadrao;
+
+    // 2. Cria o HTML dos links dinâmicos
+    let htmlContent = linksSalvos.map(link => `
+        <a href="${link.url}" target="_blank" class="link-card">
+            <i class="${link.icon}"></i>
+            <span>${link.title}</span>
+        </a>
+    `).join('');
+
+    // 3. ADICIONA OS BOTÕES FIXOS DE PIX NO FINAL DO MESMO HTML
+    htmlContent += `
+        <div class="link-card" style="cursor:pointer" onclick="copiarPix()">
+                <i class="ph ph-copy"></i>
+                <span>Chave PIX</span>
+                <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+            </div>
+
+            <div class="link-card" style="cursor:pointer" href="javascript:void(0)" id="showImageBtn">
+            <i class="ph ph-qr-code"></i>
+            <span>Pagar via PIX (QrCode)</span>
+            </div>
+
+            <div id="pixModal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                     <h2 style="margin-bottom: 20px; color:white; font-size:1.2rem;">Pagar via PIX</h2>
+                    <img src="img/qrcode.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);"></br>
+                    <img src="img/logo_pix.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                    <p style="color:white; font-size:0.95rem; margin-bottom:15px;">
+                        Abra o pix do seu banco e pague através do QR Code ou Pix Chave Aleatória.
                         </p>
-                        <div class="link-card" style="cursor:pointer; justify-content:center;" id="btn-pix-modal">
-                            <i class="ph ph-copy"></i>
-                            <span>Copiar PIX (Chave Aleatória)</span>
-                            <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
-                        </div>   
-                    </div>
+
+                    <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPixModal()">
+                        <i class="ph ph-copy"></i>
+                        <span>Copiar PIX (Chave Aleatória)</span>
+                        <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                    </div>   
                 </div>
-            `;
+            </div>
+    `;
 
-            container.innerHTML = htmlContent;
-            atribuirEventos(); // Reatribui os cliques após injetar o HTML
+    // 4. Joga tudo para dentro do container de uma vez só
+    container.innerHTML = htmlContent;
+}
+
+// Funções de apoio
+function abrirModalPix() {
+    document.getElementById('pixModal').style.display = "flex";
+}
+
+function copiarPix() {
+    const chavePix = "21968439249"; 
+    navigator.clipboard.writeText(chavePix).then(() => {
+        const status = document.getElementById('status-pix');
+        status.style.display = "inline";
+        setTimeout(() => { status.style.display = "none"; }, 2000);
+    });
+}
+
+// Inicia tudo
+window.addEventListener('load', loadDynamicLinks);
+
+// Função para copiar chave PIX (Global para ser acessada por qualquer botão)
+function copiarPix(tipo) {
+    const chave = (tipo === 'modal') ? "1c0ba67a-340c-4ed9-b7cc-abdcaba60de8" : "21968439249";
+    const statusId = (tipo === 'modal') ? 'status-pix-modal' : 'status-pix';
+
+    navigator.clipboard.writeText(chave).then(() => {
+        const status = document.getElementById(statusId);
+        if (status) {
+            status.style.display = "inline";
+            setTimeout(() => { status.style.display = "none"; }, 2000);
         }
+    });
+}
 
-        function atribuirEventos() {
-            // Copiar Pix Lista
-            document.getElementById('btn-pix-lista').onclick = () => copiarTexto("21968439249", "status-pix");
-            
-            // Copiar Pix Modal
-            document.getElementById('btn-pix-modal').onclick = () => copiarTexto("1c0ba67a-340c-4ed9-b7cc-abdcaba60de8", "status-pix-modal");
+// Gerenciamento de Cliques (Event Delegation)
+document.addEventListener('click', function(e) {
+    // Abrir Modal
+    if (e.target.closest('#showImageBtn')) {
+        document.getElementById('pixModal').style.display = "flex";
+    }
+    
+    // Fechar Modal (no X ou fora dele)
+    if (e.target.classList.contains('close') || e.target.id === 'pixModal') {
+        document.getElementById('pixModal').style.display = "none";
+    }
 
-            // Modal Controls
-            const modal = document.getElementById('pixModal');
-            document.getElementById('showImageBtn').onclick = () => modal.style.display = "flex";
-            document.getElementById('closeModal').onclick = () => modal.style.display = "none";
-            window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-        }
+    // Botão Download VCard
+    if (e.target.id === 'downloadVCard') {
+        baixarVCard();
+    }
+});
 
-        function copiarTexto(texto, statusId) {
-            navigator.clipboard.writeText(texto).then(() => {
-                const status = document.getElementById(statusId);
-                status.style.display = "inline";
-                setTimeout(() => { status.style.display = "none"; }, 2000);
-            });
-        }
+function baixarVCard() {
+    const contact = {
+        name: "Delisil",
+        phone: "+5521968439249",
+        email: "davi100msn@gmail.com",
+        site: "https://davi-garcia.github.io/cardapio-contato/",
+        address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ"
+    };
 
-        // Função do VCard ORIGINAL
-        document.getElementById('downloadVCard').addEventListener('click', function() {
-            const contact = {
-                name: "Delisil",
-                phone: "+5521968439249",
-                email: "davi100msn@gmail.com",
-                site: "https://davi-garcia.github.io/cardapio-contato/",
-                address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ"
-            };
-            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL;TYPE=CELL,VOICE:${contact.phone}\nEMAIL;TYPE=PREF,INTERNET:${contact.email}\nURL:${contact.site}\nADR;TYPE=WORK:;;${contact.address};;;;\nEND:VCARD`;
-            const blob = new Blob([vcard], { type: "text/vcard" });
-            const url = window.URL.createObjectURL(blob);
-            const newLink = document.createElement('a');
-            newLink.download = contact.name + ".vcf";
-            newLink.href = url;
-            newLink.click();
-        });
-    </script>
+    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL;TYPE=CELL,VOICE:${contact.phone}\nEMAIL;TYPE=PREF,INTERNET:${contact.email}\nURL:${contact.site}\nADR;TYPE=WORK:;;${contact.address};;;;\nEND:VCARD`;
+
+    const blob = new Blob([vcard], { type: "text/vcard" });
+    const url = window.URL.createObjectURL(blob);
+    const newLink = document.createElement('a');
+    newLink.download = contact.name + ".vcf";
+    newLink.href = url;
+    newLink.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function loadDynamicLinks() {
+    const container = document.getElementById('dynamic-links');
+    const linksPadrao = [
+        { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+        { title: "Avalie no Google", url: "https://g.page/r/CcLV16_qj79jEAE/review", icon: "ph ph-google-logo" },
+        { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" },
+        { title: "WhatsApp", url: "https://wa.me/5521968439249", icon: "ph ph-whatsapp-logo" }
+    ];
+    
+    const linksSalvos = JSON.parse(localStorage.getItem('myLinks')) || linksPadrao;
+
+    let htmlContent = linksSalvos.map(link => `
+        <a href="${link.url}" target="_blank" class="link-card">
+            <i class="${link.icon}"></i>
+            <span>${link.title}</span>
+        </a>
+    `).join('');
+
+    // Injeção dos botões de PIX e Modal
+    htmlContent += `
+        <div class="link-card" style="cursor:pointer" onclick="copiarPix('lista')">
+            <i class="ph ph-copy"></i>
+            <span>Chave PIX</span>
+            <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+        </div>
+
+        <div class="link-card" style="cursor:pointer" id="showImageBtn">
+            <i class="ph ph-qr-code"></i>
+            <span>Pagar via PIX (QrCode)</span>
+        </div>
+
+        <div id="pixModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 9999;">
+            <div class="modal-content">
+                <span class="close">×</span>
+                <h2 style="margin-bottom: 20px; color:white;">Pagar via PIX</h2>
+                <img src="img/qrcode.png" alt="QR Code" style="max-width:80%; border-radius:15px; margin-bottom:10px;"></br>
+                <img src="img/logo_pix.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                <p>Escaneie ou copie a chave abaixo:</p>
+                <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPix('modal')">
+                    <i class="ph ph-copy"></i>
+                    <span>Copiar Chave Aleatória</span>
+                    <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                </div>   
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = htmlContent;
+}
+
+window.addEventListener('load', loadDynamicLinks);
+</script>
 </body>
 </html>
