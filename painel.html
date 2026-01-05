@@ -1,21 +1,29 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Delisil</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <style>
+
         body { font-family: 'Poppins', sans-serif; background: #1a0631; color: white; display: flex; justify-content: center; padding: 20px; }
+
         .admin-box { width: 100%; max-width: 500px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; display: block; }
+
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box;
+
+    display: block; }
+
         button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; box-sizing: border-box;}
+
         .link-item { background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
+
         .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; }
         #login-screen { text-align: center; }
         #admin-content { display: none; }
