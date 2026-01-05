@@ -1,58 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delisil - Doceria</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary-bg: #2d0a4e; --accent-purple: #020202; --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --text-color: #ffffff; }
-        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1a0631 0%, #000000 100%); background-attachment: fixed; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--text-color); }
-        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('img/fundo.webp'); background-size: cover; background-position: center; filter: blur(15px) brightness(0.4); transform: scale(1.1); z-index: -1; }
-        .container { width: 100%; max-width: 450px; padding: 40px 20px; text-align: center; box-sizing: border-box; }
-        .logo-wrapper { width: 120px; height: 120px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; border: 4px solid var(--accent-purple); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        :root {
+            --primary-bg: #2d0a4e;
+            --accent-purple: #020202;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a0631 0%, #000000 100%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/fundo.webp'); 
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px) brightness(0.4);
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header { margin-bottom: 30px; }
+
+        .logo-wrapper {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--accent-purple);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
         .logo-wrapper img { width: 85%; height: auto; }
+
         h1 { font-size: 1.5rem; margin: 0; font-weight: 600; }
         p { font-size: 0.9rem; opacity: 0.8; margin: 5px 0 20px; }
-        .btn-main { background: transparent; border: 2px solid #fff; color: white; padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; display: inline-block; margin-bottom: 40px; }
-        .btn-header { display: block; max-width: 240px; margin: 20px auto; padding: 10px 30px; font-size: 15px; margin-top: -15px; }
-        .links-list { display: flex; flex-direction: column; gap: 15px; }
-        .link-card { background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 16px; border-radius: 15px; display: flex; align-items: center; text-decoration: none; color: white; transition: transform 0.2s; cursor: pointer; position: relative; }
+
+        .btn-main {
+            background: transparent;
+            border: 2px solid #fff;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .btn-main:hover { background: white; color: var(--primary-bg); }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 16px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, background 0.3s;
+            position: relative;
+        }
+
+        .link-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.2); }
+
         .link-card i { font-size: 24px; margin-right: 15px; width: 30px; }
-        .link-card span { flex-grow: 1; text-align: left; }
-        #pixModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
-        .modal-content { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 20px; text-align: center; width: 90%; max-width: 400px; position: relative; }
-        .close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: white; }
+
+        .link-card span { font-weight: 400; flex-grow: 1; text-align: left; }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 500px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 30px;
+                border: 1px solid var(--glass-border);
+                margin: 20px;
+            }
+        }
+
+        .btn-header {
+            display: block;
+            max-width: 240px;
+            margin: 20px auto;
+            padding: 10px 30px;
+            font-size: 15px;
+            margin-top: -15px;
+        }
+
+        .btn-header:last-of-type { margin-bottom: 25px; }
+
+        #pixModal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .modal-content .close {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <div class="logo-wrapper"><img src="img/logo.png" alt="Delisil"></div>
+            <div class="logo-wrapper">
+                <img src="img/logo.png" alt="Delisil">
+            </div>
             <h1>Delisil</h1>
             <p>A Doceria 01 da cidade!</p>
             <a href="javascript:void(0)" id="downloadVCard" class="btn-main btn-header">📒 Salvar na agenda</a>
             <a href="tel:5521968439249" class="btn-main btn-header">📞 Ligar</a>
         </div>
+
         <div class="links-list" id="dynamic-links">
             <p>Carregando links...</p>
-        </div>
-    </div>
-
-    <div id="pixModal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">×</span>
-            <h2 style="color:white;">Pagar via PIX</h2>
-            <img src="img/qrcode.png" style="max-width:80%; border-radius:15px;"><br><br>
-            <img src="img/logo_pix.png" style="max-width:100%;">
-            <p style="margin-top:15px; color:white;">Abra o pix do seu banco e pague através do QR Code ou Chave Aleatória.</p>
-            <div class="link-card" style="justify-content:center;" id="btn-pix-modal">
-                <i class="ph ph-copy"></i>
-                <span>Copiar PIX (Chave Aleatória)</span>
-                <small id="status-pix-modal" style="display:none; color:#4caf50; margin-left:10px;">Copiado!</small>
-            </div>   
         </div>
     </div>
 
@@ -72,57 +202,104 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Escuta o Firebase em tempo real
         onSnapshot(doc(db, "config", "links"), (docSnap) => {
-            const container = document.getElementById('dynamic-links');
             if (docSnap.exists()) {
-                renderizar(docSnap.data().meusLinks);
+                const linksData = docSnap.data().meusLinks;
+                loadDynamicLinks(linksData);
             } else {
-                container.innerHTML = "<p>Nenhum link ativo.</p>";
+                // Caso não existam dados no Firebase, usa os padrões que você tinha
+                loadDynamicLinks([
+                    { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+                    { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" }
+                ]);
             }
         });
 
-        function renderizar(links) {
+        function loadDynamicLinks(linksSalvos) {
             const container = document.getElementById('dynamic-links');
-            let html = links.map(link => `
+            
+            let htmlContent = linksSalvos.map(link => `
                 <a href="${link.url}" target="_blank" class="link-card">
                     <i class="${link.icon}"></i>
                     <span>${link.title}</span>
                 </a>
             `).join('');
 
-            html += `
-                <div class="link-card" id="btn-pix-lista">
+            // Adiciona seus botões fixos de PIX e o Modal ORIGINAL
+            htmlContent += `
+                <div class="link-card" style="cursor:pointer" id="btn-pix-lista">
                     <i class="ph ph-copy"></i>
                     <span>Chave PIX</span>
-                    <small id="status-pix" style="display:none; color:#4caf50; margin-left:10px;">Copiado!</small>
+                    <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
                 </div>
-                <div class="link-card" id="showImageBtn">
+
+                <div class="link-card" style="cursor:pointer" id="showImageBtn">
                     <i class="ph ph-qr-code"></i>
                     <span>Pagar via PIX (QrCode)</span>
                 </div>
+
+                <div id="pixModal">
+                    <div class="modal-content">
+                        <span class="close" id="closeModal">×</span>
+                        <h2 style="margin-bottom: 20px; color:white; font-size:1.2rem;">Pagar via PIX</h2>
+                        <img src="img/qrcode.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);"><br><br>
+                        <img src="img/logo_pix.png" alt="Logo PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                        <p style="color:white; font-size:0.95rem; margin-bottom:15px; margin-top:15px;">
+                            Abra o pix do seu banco e pague através do QR Code ou Pix Chave Aleatória.
+                        </p>
+                        <div class="link-card" style="cursor:pointer; justify-content:center;" id="btn-pix-modal">
+                            <i class="ph ph-copy"></i>
+                            <span>Copiar PIX (Chave Aleatória)</span>
+                            <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                        </div>   
+                    </div>
+                </div>
             `;
-            container.innerHTML = html;
+
+            container.innerHTML = htmlContent;
+            atribuirEventos(); // Reatribui os cliques após injetar o HTML
+        }
+
+        function atribuirEventos() {
+            // Copiar Pix Lista
+            document.getElementById('btn-pix-lista').onclick = () => copiarTexto("21968439249", "status-pix");
             
-            document.getElementById('btn-pix-lista').onclick = () => copiar("21968439249", "status-pix");
-            document.getElementById('showImageBtn').onclick = () => document.getElementById('pixModal').style.display = "flex";
-            document.getElementById('closeModal').onclick = () => document.getElementById('pixModal').style.display = "none";
-            document.getElementById('btn-pix-modal').onclick = () => copiar("1c0ba67a-340c-4ed9-b7cc-abdcaba60de8", "status-pix-modal");
+            // Copiar Pix Modal
+            document.getElementById('btn-pix-modal').onclick = () => copiarTexto("1c0ba67a-340c-4ed9-b7cc-abdcaba60de8", "status-pix-modal");
+
+            // Modal Controls
+            const modal = document.getElementById('pixModal');
+            document.getElementById('showImageBtn').onclick = () => modal.style.display = "flex";
+            document.getElementById('closeModal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
         }
 
-        function copiar(texto, id) {
-            navigator.clipboard.writeText(texto);
-            const s = document.getElementById(id);
-            s.style.display = "inline";
-            setTimeout(() => s.style.display = "none", 2000);
+        function copiarTexto(texto, statusId) {
+            navigator.clipboard.writeText(texto).then(() => {
+                const status = document.getElementById(statusId);
+                status.style.display = "inline";
+                setTimeout(() => { status.style.display = "none"; }, 2000);
+            });
         }
 
-        document.getElementById('downloadVCard').onclick = () => {
-            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:Delisil\nTEL;TYPE=CELL:+5521968439249\nEND:VCARD`;
+        // Função do VCard ORIGINAL
+        document.getElementById('downloadVCard').addEventListener('click', function() {
+            const contact = {
+                name: "Delisil",
+                phone: "+5521968439249",
+                email: "davi100msn@gmail.com",
+                site: "https://davi-garcia.github.io/cardapio-contato/",
+                address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ"
+            };
+            const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL;TYPE=CELL,VOICE:${contact.phone}\nEMAIL;TYPE=PREF,INTERNET:${contact.email}\nURL:${contact.site}\nADR;TYPE=WORK:;;${contact.address};;;;\nEND:VCARD`;
             const blob = new Blob([vcard], { type: "text/vcard" });
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = "Delisil.vcf"; a.click();
-        };
+            const newLink = document.createElement('a');
+            newLink.download = contact.name + ".vcf";
+            newLink.href = url;
+            newLink.click();
+        });
     </script>
 </body>
 </html>

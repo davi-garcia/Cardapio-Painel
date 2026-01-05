@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Delisil</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -9,13 +10,15 @@
         body { font-family: 'Poppins', sans-serif; background: #1a0631; color: white; display: flex; justify-content: center; padding: 20px; }
         .admin-box { width: 100%; max-width: 500px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
         input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; display: block; }
-        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; box-sizing: border-box;}
         .link-item { background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
-        .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; }
+        .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; margin-top: 0;}
+        #login-screen { text-align: center; }
         #admin-content { display: none; }
     </style>
 </head>
 <body>
+
     <div class="admin-box">
         <div id="login-screen">
             <h2>🔐 Login</h2>
@@ -23,18 +26,30 @@
             <input type="password" id="pass" placeholder="Senha">
             <button id="btnLogin">Entrar</button>
         </div>
+
         <div id="admin-content">
             <h2>🛠 Gerenciar Links</h2>
-            <input type="text" id="new-title" placeholder="Título">
-            <input type="text" id="new-url" placeholder="URL">
-            <select id="new-icon">
-                <option value="ph ph-link">🔗 Link Padrão</option>
-                <option value="ph ph-instagram-logo">📸 Instagram</option>
-                <option value="ph ph-whatsapp-logo">💬 WhatsApp</option>
-                <option value="ph ph-map-pin">📍 Localização</option>
-            </select>
-            <button id="addBtn">Adicionar Link</button>
-            <hr><div id="links-container"></div>
+            <div id="form-novo">
+                <h4>Adicionar Novo Link</h4>
+                <input type="text" id="new-title" placeholder="Título (Ex: TikTok)">
+                <input type="text" id="new-url" placeholder="URL (https://...)">
+                <select id="new-icon">
+                    <option value="ph ph-link">🔗 Link Padrão</option>
+                    <option value="ph ph-instagram-logo">📸 Instagram</option>
+                    <option value="ph ph-facebook-logo">👤 Facebook</option>
+                    <option value="ph ph-whatsapp-logo">💬 WhatsApp</option>
+                    <option value="ph ph-map-pin">📍 Localização</option>
+                    <option value="ph ph-google-logo">🌐 Google</option>
+                    <option value="ph ph-wifi-high">📶 Wi-Fi</option>
+                    <option value="ph ph-shopping-cart">🛒 Loja</option>
+                    <option value="ph ph-currency-dollar">💰 Pagamento</option>
+                </select>
+                <button id="addBtn">Adicionar Div</button>
+            </div>
+            <hr style="margin: 20px 0; opacity: 0.2;">
+            <h4>Links Ativos (No Firebase)</h4>
+            <div id="links-container">Carregando...</div>
+            <button onclick="location.reload()" style="background: #666; margin-top: 30px;">Sair</button>
         </div>
     </div>
 
@@ -55,45 +70,63 @@
         const db = getFirestore(app);
         let linksAtuais = [];
 
+        // Login
         document.getElementById('btnLogin').onclick = () => {
-            if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === 'admin1234') {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === 'admin1234') {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
                 buscarLinks();
-            }
+            } else { alert('Acesso negado!'); }
         };
 
         async function buscarLinks() {
-            const snap = await getDoc(doc(db, "config", "links"));
-            if (snap.exists()) linksAtuais = snap.data().meusLinks || [];
-            render();
+            const docRef = doc(db, "config", "links");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                linksAtuais = docSnap.data().meusLinks || [];
+            }
+            renderLinks();
         }
 
-        function render() {
-            const c = document.getElementById('links-container');
-            c.innerHTML = linksAtuais.map((l, i) => `
-                <div class="link-item">
-                    <span>${l.title}</span>
-                    <button class="btn-delete" onclick="remover(${i})">Remover</button>
-                </div>
-            `).join('');
+        function renderLinks() {
+            const container = document.getElementById('links-container');
+            container.innerHTML = '';
+            linksAtuais.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="link-item">
+                        <span><i class="${item.icon}"></i> ${item.title}</span>
+                        <button class="btn-delete" onclick="removerLink(${index})">Remover</button>
+                    </div>`;
+            });
         }
 
         document.getElementById('addBtn').onclick = async () => {
             const title = document.getElementById('new-title').value;
-            let url = document.getElementById('new-url').value;
+            let url = document.getElementById('new-url').value.trim();
             const icon = document.getElementById('new-icon').value;
-            if(!url.startsWith('http')) url = 'https://' + url;
+
+            if(!title || !url) return alert('Preencha tudo!');
+            if (!url.startsWith('http')) url = 'https://' + url;
+
             linksAtuais.push({ title, url, icon });
-            await setDoc(doc(db, "config", "links"), { meusLinks: linksAtuais });
-            render();
+            await salvarNoFirebase();
+            
+            document.getElementById('new-title').value = '';
+            document.getElementById('new-url').value = '';
+            renderLinks();
         };
 
-        window.remover = async (i) => {
-            linksAtuais.splice(i, 1);
-            await setDoc(doc(db, "config", "links"), { meusLinks: linksAtuais });
-            render();
+        window.removerLink = async (index) => {
+            linksAtuais.splice(index, 1);
+            await salvarNoFirebase();
+            renderLinks();
         };
+
+        async function salvarNoFirebase() {
+            await setDoc(doc(db, "config", "links"), { meusLinks: linksAtuais });
+        }
     </script>
 </body>
 </html>
