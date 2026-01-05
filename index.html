@@ -612,24 +612,41 @@ function loadDynamicLinks() {
 }
 
 window.addEventListener('load', loadDynamicLinks);
-<<<<<<< HEAD
-=======
 
+// Mostra o modal
+document.getElementById('showImageBtn').addEventListener('click', function() {
+    const modal = document.getElementById('pixModal');
+    modal.style.display = "flex"; 
+});
 
-let htmlContent = linksSalvos.map(link => {
-    // Garantia extra: se o link salvo no banco estiver sem http, corrige na hora de exibir
-    let urlCorrigida = link.url.startsWith('http') ? link.url : 'https://' + link.url;
+// Fecha o modal ao clicar no X
+document.querySelector('.modal-content .close').addEventListener('click', function() {
+    document.getElementById('pixModal').style.display = "none";
+});
+
+// Fecha o modal ao clicar fora do conteúdo
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('pixModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
+
+// Função para copiar chave PIX dentro do modal
+function copiarPixModal() {
+    const chavePix = "1c0ba67a-340c-4ed9-b7cc-abdcaba60de8"; // Coloque sua chave PIX aqui do Modal  ****
     
-    return `
-        <a href="${urlCorrigida}" target="_blank" rel="noopener noreferrer" class="link-card">
-            <i class="${link.icon}"></i>
-            <span>${link.title}</span>
-        </a>
-    `;
-}).join('');
->>>>>>> parent of dba2716 (teste)
-=======
->>>>>>> parent of 7de0824 (Ctrl+Z)
+    navigator.clipboard.writeText(chavePix).then(() => {
+        const status = document.getElementById('status-pix-modal');
+        status.style.display = "inline";
+        setTimeout(() => {
+            status.style.display = "none";
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+    });
+}
+
 </script>
 </body>
 </html>
