@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delisil - Doceria</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -304,126 +302,72 @@
         </div>
     </div>
 
-<script type="module">
+    <script>
+    document.getElementById('downloadVCard').addEventListener('click', function() {
+        // Dados do Contato que é Salvo ****
+        const contact = {
+            name: "Delisil",
+            phone: "+5521968439249",
+            email: "davi100msn@gmail.com",
+            site: "https://davi-garcia.github.io/cardapio-contato/",
+            address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ" // Endereço dos contatos ****
+        };
 
-    // 1. CONFIGURAÇÃO DO FIREBASE (Cole os seus dados aqui)
- const firebaseConfig = {
-    apiKey: "AIzaSyAwazCVEVkolnyRbIJAx2a4_IpMtXoZ-Js",
-    authDomain: "delisil.firebaseapp.com",
-    projectId: "delisil",
-    storageBucket: "delisil.firebasestorage.app",
-    messagingSenderId: "90955672138",
-    appId: "1:90955672138:web:79b2df6037611badd7d4b3",
-    measurementId: "G-C257TGX405"
-  };
+        // Estrutura do arquivo vCard (vcf)
+        const vcard = `BEGIN:VCARD
+        VERSION:3.0
+        FN:${contact.name}
+        TEL;TYPE=CELL,VOICE:${contact.phone}
+        EMAIL;TYPE=PREF,INTERNET:${contact.email}
+        URL:${contact.site}
+        ADR;TYPE=WORK:;;${contact.address};;;;
+        END:VCARD`;
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+        // Cria o arquivo e dispara o download
+        const blob = new Blob([vcard], { type: "text/vcard" });
+        const url = window.URL.createObjectURL(blob);
+        const newLink = document.createElement('a');
+        newLink.download = contact.name + ".vcf";
+        newLink.href = url;
+        newLink.click();
+        window.URL.revokeObjectURL(url);
+    });
 
-// Inicializa o Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// 2. FUNÇÃO ÚNICA PARA CARREGAR LINKS
-function loadDynamicLinks() {
-    const container = document.getElementById('dynamic-links');
+    function copiarPix() {
+    const chavePix = "21968439249"; // <-- Coloque aqui a sua chave pix do Index *****
     
-    // Escuta o Firebase em tempo real
-    db.ref('links').on('value', (snapshot) => {
-        const linksSalvos = snapshot.val() || [];
+    navigator.clipboard.writeText(chavePix).then(() => {
+        // Mostra o aviso de "Copiado!"
+        const status = document.getElementById('status-pix');
+        status.style.display = "inline";
         
-        // Gera o HTML dos links vindos do banco de dados
-        let htmlContent = linksSalvos.map(link => {
-            let urlCorrigida = link.url.startsWith('http') ? link.url : 'https://' + link.url;
-            return `
-                <a href="${urlCorrigida}" target="_blank" rel="noopener noreferrer" class="link-card">
-                    <i class="${link.icon}"></i>
-                    <span>${link.title}</span>
-                </a>
-            `;
-        }).join('');
-
-        // 3. ADICIONA OS BOTÕES FIXOS DE PIX (Que não mudam)
-        htmlContent += `
-            <div class="link-card" style="cursor:pointer" onclick="copiarPix('lista')">
-                <i class="ph ph-copy"></i>
-                <span>Chave PIX</span>
-                <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
-            </div>
-
-            <div class="link-card" style="cursor:pointer" id="showImageBtn">
-                <i class="ph ph-qr-code"></i>
-                <span>Pagar via PIX (QrCode)</span>
-            </div>
-
-            <div id="pixModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 9999;">
-                <div class="modal-content">
-                    <span class="close">×</span>
-                    <h2 style="margin-bottom: 20px; color:white;">Pagar via PIX</h2>
-                    <img src="img/qrcode.png" alt="QR Code" style="max-width:80%; border-radius:15px; margin-bottom:10px;"></br>
-                    <img src="img/logo_pix.png" alt="Logo PIX" style="max-width:100%;">
-                    <p>Escaneie ou copie a chave abaixo:</p>
-                    <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPix('modal')">
-                        <i class="ph ph-copy"></i>
-                        <span>Copiar Chave Aleatória</span>
-                        <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
-                    </div>   
-                </div>
-            </div>
-        `;
-
-        container.innerHTML = htmlContent;
+        // Esconde o aviso após 2 segundos
+        setTimeout(() => {
+            status.style.display = "none";
+        }, 2000);
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
     });
 }
 
-// 4. FUNÇÕES DE APOIO (PIX E VCARD)
-function copiarPix(tipo) {
-    const chave = (tipo === 'modal') ? "1c0ba67a-340c-4ed9-b7cc-abdcaba60de8" : "21968439249";
-    const statusId = (tipo === 'modal') ? 'status-pix-modal' : 'status-pix';
-
-    navigator.clipboard.writeText(chave).then(() => {
-        const status = document.getElementById(statusId);
-        if (status) {
-            status.style.display = "inline";
-            setTimeout(() => { status.style.display = "none"; }, 2000);
-        }
-    });
-}
-
-// Gerenciamento de Cliques para o Modal e VCard
-document.addEventListener('click', function(e) {
-    if (e.target.closest('#showImageBtn')) {
-        document.getElementById('pixModal').style.display = "flex";
-    }
-    if (e.target.classList.contains('close') || e.target.id === 'pixModal') {
-        document.getElementById('pixModal').style.display = "none";
-    }
-    if (e.target.id === 'downloadVCard') {
-        baixarVCard();
-    }
+// Mostra o modal
+document.getElementById('showImageBtn').addEventListener('click', function() {
+    const modal = document.getElementById('pixModal');
+    modal.style.display = "flex"; 
 });
 
-function baixarVCard() {
-    const contact = {
-        name: "Delisil",
-        phone: "+5521968439249",
-        email: "davi100msn@gmail.com",
-        site: "https://davi-garcia.github.io/cardapio-contato/",
-        address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ"
-    };
-    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL;TYPE=CELL,VOICE:${contact.phone}\nEMAIL;TYPE=PREF,INTERNET:${contact.email}\nURL:${contact.site}\nADR;TYPE=WORK:;;${contact.address};;;;\nEND:VCARD`;
-    const blob = new Blob([vcard], { type: "text/vcard" });
-    const url = window.URL.createObjectURL(blob);
-    const newLink = document.createElement('a');
-    newLink.download = contact.name + ".vcf";
-    newLink.href = url;
-    newLink.click();
-    window.URL.revokeObjectURL(url);
-}
+// Fecha o modal ao clicar no X
+document.querySelector('.modal-content .close').addEventListener('click', function() {
+    document.getElementById('pixModal').style.display = "none";
+});
 
-// Inicia a função ao carregar a página
-window.addEventListener('load', loadDynamicLinks);
+// Fecha o modal ao clicar fora do conteúdo
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('pixModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
 
 // Função para copiar chave PIX dentro do modal
 function copiarPixModal() {
@@ -439,7 +383,182 @@ function copiarPixModal() {
         console.error('Erro ao copiar: ', err);
     });
 }
+
+// Função para editar as Divs através de um painel administrativo
+function loadDynamicLinks() {
+    const container = document.getElementById('dynamic-links');
     
+    // 1. Busca os links do Painel Admin (ou usa padrão se vazio)
+    const linksPadrao = [
+        { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+        { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" }
+    ];
+    const linksSalvos = JSON.parse(localStorage.getItem('myLinks')) || linksPadrao;
+
+    // 2. Cria o HTML dos links dinâmicos
+    let htmlContent = linksSalvos.map(link => `
+        <a href="${link.url}" target="_blank" class="link-card">
+            <i class="${link.icon}"></i>
+            <span>${link.title}</span>
+        </a>
+    `).join('');
+
+    // 3. ADICIONA OS BOTÕES FIXOS DE PIX NO FINAL DO MESMO HTML
+    htmlContent += `
+        <div class="link-card" style="cursor:pointer" onclick="copiarPix()">
+                <i class="ph ph-copy"></i>
+                <span>Chave PIX</span>
+                <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+            </div>
+
+            <div class="link-card" style="cursor:pointer" href="javascript:void(0)" id="showImageBtn">
+            <i class="ph ph-qr-code"></i>
+            <span>Pagar via PIX (QrCode)</span>
+            </div>
+
+            <div id="pixModal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                     <h2 style="margin-bottom: 20px; color:white; font-size:1.2rem;">Pagar via PIX</h2>
+                    <img src="img/qrcode.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);"></br>
+                    <img src="img/logo_pix.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                    <p style="color:white; font-size:0.95rem; margin-bottom:15px;">
+                        Abra o pix do seu banco e pague através do QR Code ou Pix Chave Aleatória.
+                        </p>
+
+                    <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPixModal()">
+                        <i class="ph ph-copy"></i>
+                        <span>Copiar PIX (Chave Aleatória)</span>
+                        <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                    </div>   
+                </div>
+            </div>
+    `;
+
+    // 4. Joga tudo para dentro do container de uma vez só
+    container.innerHTML = htmlContent;
+}
+
+// Funções de apoio
+function abrirModalPix() {
+    document.getElementById('pixModal').style.display = "flex";
+}
+
+function copiarPix() {
+    const chavePix = "21968439249"; 
+    navigator.clipboard.writeText(chavePix).then(() => {
+        const status = document.getElementById('status-pix');
+        status.style.display = "inline";
+        setTimeout(() => { status.style.display = "none"; }, 2000);
+    });
+}
+
+// Inicia tudo
+window.addEventListener('load', loadDynamicLinks);
+
+// Função para copiar chave PIX (Global para ser acessada por qualquer botão)
+function copiarPix(tipo) {
+    const chave = (tipo === 'modal') ? "1c0ba67a-340c-4ed9-b7cc-abdcaba60de8" : "21968439249";
+    const statusId = (tipo === 'modal') ? 'status-pix-modal' : 'status-pix';
+
+    navigator.clipboard.writeText(chave).then(() => {
+        const status = document.getElementById(statusId);
+        if (status) {
+            status.style.display = "inline";
+            setTimeout(() => { status.style.display = "none"; }, 2000);
+        }
+    });
+}
+
+// Gerenciamento de Cliques (Event Delegation)
+document.addEventListener('click', function(e) {
+    // Abrir Modal
+    if (e.target.closest('#showImageBtn')) {
+        document.getElementById('pixModal').style.display = "flex";
+    }
+    
+    // Fechar Modal (no X ou fora dele)
+    if (e.target.classList.contains('close') || e.target.id === 'pixModal') {
+        document.getElementById('pixModal').style.display = "none";
+    }
+
+    // Botão Download VCard
+    if (e.target.id === 'downloadVCard') {
+        baixarVCard();
+    }
+});
+
+function baixarVCard() {
+    const contact = {
+        name: "Delisil",
+        phone: "+5521968439249",
+        email: "davi100msn@gmail.com",
+        site: "https://davi-garcia.github.io/cardapio-contato/",
+        address: "Rua Ernesto Cardoso, 975, Rio de Janeiro - RJ"
+    };
+
+    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL;TYPE=CELL,VOICE:${contact.phone}\nEMAIL;TYPE=PREF,INTERNET:${contact.email}\nURL:${contact.site}\nADR;TYPE=WORK:;;${contact.address};;;;\nEND:VCARD`;
+
+    const blob = new Blob([vcard], { type: "text/vcard" });
+    const url = window.URL.createObjectURL(blob);
+    const newLink = document.createElement('a');
+    newLink.download = contact.name + ".vcf";
+    newLink.href = url;
+    newLink.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function loadDynamicLinks() {
+    const container = document.getElementById('dynamic-links');
+    const linksPadrao = [
+        { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+        { title: "Avalie no Google", url: "https://g.page/r/CcLV16_qj79jEAE/review", icon: "ph ph-google-logo" },
+        { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" },
+        { title: "WhatsApp", url: "https://wa.me/5521968439249", icon: "ph ph-whatsapp-logo" }
+    ];
+    
+    const linksSalvos = JSON.parse(localStorage.getItem('myLinks')) || linksPadrao;
+
+    let htmlContent = linksSalvos.map(link => `
+        <a href="${link.url}" target="_blank" class="link-card">
+            <i class="${link.icon}"></i>
+            <span>${link.title}</span>
+        </a>
+    `).join('');
+
+    // Injeção dos botões de PIX e Modal
+    htmlContent += `
+        <div class="link-card" style="cursor:pointer" onclick="copiarPix('lista')">
+            <i class="ph ph-copy"></i>
+            <span>Chave PIX</span>
+            <small id="status-pix" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+        </div>
+
+        <div class="link-card" style="cursor:pointer" id="showImageBtn">
+            <i class="ph ph-qr-code"></i>
+            <span>Pagar via PIX (QrCode)</span>
+        </div>
+
+        <div id="pixModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 9999;">
+            <div class="modal-content">
+                <span class="close">×</span>
+                <h2 style="margin-bottom: 20px; color:white;">Pagar via PIX</h2>
+                <img src="img/qrcode.png" alt="QR Code" style="max-width:80%; border-radius:15px; margin-bottom:10px;"></br>
+                <img src="img/logo_pix.png" alt="QR Code PIX" style="max-width:100%; border-radius:15px; box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+                <p>Escaneie ou copie a chave abaixo:</p>
+                <div class="link-card" style="cursor:pointer; justify-content:center;" onclick="copiarPix('modal')">
+                    <i class="ph ph-copy"></i>
+                    <span>Copiar Chave Aleatória</span>
+                    <small id="status-pix-modal" style="font-size: 10px; margin-left: 10px; color: #4caf50; display: none;">Copiado!</small>
+                </div>   
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = htmlContent;
+}
+
+window.addEventListener('load', loadDynamicLinks);
 </script>
 </body>
 </html>

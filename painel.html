@@ -6,14 +6,11 @@
     <title>Admin - Delisil</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
     <style>
         body { font-family: 'Poppins', sans-serif; background: #1a0631; color: white; display: flex; justify-content: center; padding: 20px; }
         .admin-box { width: 100%; max-width: 500px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; display: block; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; 
+    display: block; }
         button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; box-sizing: border-box;}
         .link-item { background: rgba(0,0,0,0.3); padding: 10px; margin: 10px 0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; }
         .btn-delete { background: #ff4b2b; width: auto; padding: 5px 10px; font-size: 12px; }
@@ -53,39 +50,32 @@
                     <option value="ph ph-app-store-logo">🍎 Apple Store</option>
                     <option value="ph ph-linkedin-logo">💼 LinkedIn</option>
                     <option value="ph ph-music-notes">🎵 Músicas (Spotify/Deezer)</option>
+                    <option value="ph ph-shopping-cart">🛒 Carrinho de Compra</option>
                     <option value="ph ph-calendar">📅 Agenda / Reservas</option>
-                    <option value="ph ph-clock">⏰ Horários</option>
+                    <option value="ph ph-clock">⏰ Horários / Relógio</option>
                     <option value="ph ph-house-line">🏠 AirBnb</option>
-                    <option value="ph ph-currency-dollar">💰 Pagamento</option>
+                    <option value="ph ph-currency-dollar">💰 PicPay / Pagamento</option>
                 </select>
                 <button onclick="addLink()">Adicionar Div</button>
             </div>
 
             <hr style="margin: 20px 0; opacity: 0.2;">
             <h4>Links Ativos</h4>
-            <div id="links-container">Carregando links...</div>
+            <div id="links-container"></div>
             <button onclick="logout()" style="background: #666; margin-top: 30px;">Sair</button>
         </div>
     </div>
 
-    <script type="module">
-        // COLE SUAS CREDENCIAIS AQUI
-        const firebaseConfig = {
-            apiKey: "AIzaSyAwazCVEVkolnyRbIJAx2a4_IpMtXoZ-Js",
-            authDomain: "delisil.firebaseapp.com",
-            projectId: "delisil",
-            storageBucket: "delisil.firebasestorage.app",
-            messagingSenderId: "90955672138",
-            appId: "1:90955672138:web:79b2df6037611badd7d4b3",
-            measurementId: "G-C257TGX405"
-        };
-
-
-        // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const analytics = getAnalytics(app);
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    <script>
+        // Links Iniciais (Padrão)
+        const initialLinks = [
+            { title: "Nossa Loja", url: "https://maps.app.goo.gl/tuynE21oZ9jkgagB6", icon: "ph ph-map-pin" },
+            { title: "Avalie no Google", url: "https://g.page/r/CcLV16_qj79jEAE/review", icon: "ph ph-google-logo" },
+            { title: "Facebook", url: "https://www.facebook.com/davi.ogarcia0/", icon: "ph ph-facebook-logo" },
+            { title: "Instagram", url: "https://www.instagram.com/davi.ogarcia", icon: "ph ph-instagram-logo" },
+            { title: "WhatsApp", url: "https://wa.me/5521968439249", icon: "ph ph-whatsapp-logo" },
+            { title: "Conectar no Wi-Fi", url: "https://docs.google.com/document/d/e/2PACX-1vTQSd0gWhcJtZ6rBq67Pp9DG4zTLON-yZdedZzJ6zTvHqejWanJJF8HZ658qcr0NnK9_525hZmw8leQ/pub", icon: "ph ph-wifi-high" }
+        ];
 
         function login() {
             const u = document.getElementById('user').value;
@@ -98,49 +88,41 @@
         }
 
         function renderLinks() {
+            let links = JSON.parse(localStorage.getItem('myLinks')) || initialLinks;
             const container = document.getElementById('links-container');
-            db.ref('links').on('value', (snapshot) => {
-                const links = snapshot.val() || [];
-                container.innerHTML = '';
-                
-                if (links.length === 0) {
-                    container.innerHTML = '<p style="opacity:0.5">Nenhum link ativo no banco de dados.</p>';
-                }
-
-                links.forEach((item, index) => {
-                    container.innerHTML += `
-                        <div class="link-item">
-                            <span><i class="${item.icon}"></i> ${item.title}</span>
-                            <button class="btn-delete" onclick="removeLink(${index})">Remover</button>
-                        </div>`;
-                });
+            container.innerHTML = '';
+            
+            links.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="link-item">
+                        <span><i class="${item.icon}"></i> ${item.title}</span>
+                        <button class="btn-delete" onclick="removeLink(${index})">Remover</button>
+                    </div>`;
             });
+            localStorage.setItem('myLinks', JSON.stringify(links));
         }
 
         function addLink() {
             const title = document.getElementById('new-title').value;
-            let url = document.getElementById('new-url').value.trim();
+            const url = document.getElementById('new-url').value;
             const icon = document.getElementById('new-icon').value;
 
             if(!title || !url) return alert('Preencha tudo!');
-            if (!url.startsWith('http')) url = 'https://' + url;
 
-            db.ref('links').once('value').then((snapshot) => {
-                let links = snapshot.val() || [];
-                links.push({ title, url, icon });
-                db.ref('links').set(links).then(() => {
-                    document.getElementById('new-title').value = '';
-                    document.getElementById('new-url').value = '';
-                });
-            });
+            let links = JSON.parse(localStorage.getItem('myLinks')) || initialLinks;
+            links.push({ title, url, icon });
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            renderLinks();
+            
+            document.getElementById('new-title').value = '';
+            document.getElementById('new-url').value = '';
         }
 
         function removeLink(index) {
-            db.ref('links').once('value').then((snapshot) => {
-                let links = snapshot.val() || [];
-                links.splice(index, 1);
-                db.ref('links').set(links);
-            });
+            let links = JSON.parse(localStorage.getItem('myLinks'));
+            links.splice(index, 1);
+            localStorage.setItem('myLinks', JSON.stringify(links));
+            renderLinks();
         }
 
         function logout() { location.reload(); }
